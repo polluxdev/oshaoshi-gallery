@@ -49,7 +49,7 @@ const userSchema = new Schema(
     passwordResetToken: String,
     passwordResetTokenExpires: Date
   },
-  { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } }
+  { timestamps: true }
 );
 
 userSchema.pre('save', async function (next) {
@@ -62,9 +62,9 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.pre('save', function (next) {
-  if (!this.isModified('password') || this.isNew) return next();
+  if (!this.isModified('password')) return next();
 
-  this.passwordChangedAfter = Date.now() - 1000;
+  this.passwordChangedAt = new Date(Date.now());
   next();
 });
 
@@ -77,7 +77,7 @@ userSchema.methods.correctPassword = async function (password, userPassword) {
   return await bcrypt.compare(password, userPassword);
 };
 
-userSchema.methods.changePasswordAfter = function (jwtTimestamp) {
+userSchema.methods.changePasswordAt = function (jwtTimestamp) {
   if (this.passwordChangedAfter) {
     const changedTimestamp = +(this.passwordChangedAfter.getTime() / 1000);
 

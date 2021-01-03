@@ -14,8 +14,12 @@ dotenv.config();
 
 const database = require('./config/database');
 const globalErrorHandler = require('./controllers/error');
+
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
 const photoRoutes = require('./routes/photo');
+const memberRoutes = require('./routes/member');
+
 const AppError = require('./utils/appError');
 
 const app = express();
@@ -48,7 +52,9 @@ app.use(hpp());
 app.use(cors());
 
 app.use(apiVersion + '/auth', authRoutes);
+app.use(apiVersion + '/users', userRoutes);
 app.use(apiVersion + '/photos', photoRoutes);
+app.use(apiVersion + '/members', memberRoutes);
 
 app.all('*', (req, res, next) => {
   const error = new AppError(

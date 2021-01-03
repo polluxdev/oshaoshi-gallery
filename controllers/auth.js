@@ -30,19 +30,20 @@ const createSendToken = (user, statusCode, res) => {
 
   res.status(statusCode).json({
     status: 'success',
-    token
+    token,
+    data: user._id
   });
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const { name, email, password, confirmPassword } = req.body;
+  const { name, email, password, confirmPassword, role } = req.body;
 
   const user = await User.create({
     name,
     email,
     password,
     confirmPassword,
-    passwordChangedAfter: Date.now()
+    role
   });
 
   createSendToken(user, 201, res);
@@ -160,7 +161,7 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
     return next(new AppError('User does no longer exists!', 401));
   }
 
-  if (user.changePasswordAfter(decoded.iat)) {
+  if (user.changePasswordAt(decoded.iat)) {
     return next(
       new AppError('User recently changed password! Please re-login.', 401)
     );
