@@ -1,6 +1,7 @@
 const express = require('express');
 
 const authController = require('../controllers/auth');
+const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router.patch('/resetPassword/:token', authController.resetPassword);
 
 router.patch(
   '/updatePassword',
-  authController.protectRoute,
+  authMiddleware.protectRoute,
   authController.updatePassword
 );
 

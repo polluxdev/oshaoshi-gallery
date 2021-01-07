@@ -2,14 +2,14 @@ const Member = require('../models/Member');
 
 const factory = require('../utils/handlerFactory');
 
-exports.checkMember = factory.checkModel(Member, 'memberId');
+exports.checkMember = factory.checkModel(Member);
 
 exports.getMembers = factory.getAll(Member);
 
-exports.getMember = factory.getOne(Member, 'memberId');
+exports.getMember = factory.getOne(Member);
 
 exports.postMember = factory.createOne(Member);
 
-exports.patchMember = factory.updateOne(Member, 'memberId');
+exports.patchMember = factory.updateOne(Member);
 
-exports.deleteMember = factory.deleteOne(Member, 'memberId');
+exports.deleteMember = factory.deleteOne(Member);

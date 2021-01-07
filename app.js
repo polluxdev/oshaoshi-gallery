@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -26,6 +27,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 const apiVersion = process.env.API_VERSION;
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.use(helmet());
 
 if (process.env.NODE_ENV === 'development') {
@@ -40,8 +43,8 @@ const limiter = rateLimit({
 
 app.use(apiVersion, limiter);
 
-app.use(bodyParser.json({ limit: '10kb' }));
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '10kb' }));
 
 app.use(mongoSanitize());
 

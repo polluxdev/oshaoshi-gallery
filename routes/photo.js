@@ -1,47 +1,37 @@
 const express = require('express');
 
 const photoController = require('../controllers/photo');
-const authController = require('../controllers/auth');
-const reviewController = require('../controllers/review');
+const authMiddleware = require('../middleware/auth');
 
 const reviewRoutes = require('../routes/review');
 
 const router = express.Router();
 
+router.get('/', photoController.getPhotos);
+router.get('/:photoId', photoController.checkPhoto, photoController.getPhoto);
+
 router.use('/:photoId/reviews', reviewRoutes);
+
+router.use(authMiddleware.protectRoute, authMiddleware.restrictTo('guest'));
 
 router
   .route('/')
-  .get(photoController.getPhotos)
   .post(
-    authController.protectRoute,
-    authController.restrictTo('user'),
     photoController.setUserId,
+    photoController.uploadImage,
+    photoController.processImage,
     photoController.postPhoto
   );
 
 router
+  .use('/:photoId', photoController.checkPhoto)
   .route('/:photoId')
-  .get(photoController.checkPhoto, photoController.getPhoto)
   .patch(
-    authController.protectRoute,
-    authController.restrictTo('user'),
-    photoController.checkPhoto,
+    photoController.uploadImage,
+    photoController.checkImage,
+    photoController.processImage,
     photoController.patchPhoto
   )
-  .delete(
-    authController.protectRoute,
-    authController.restrictTo('user'),
-    photoController.checkPhoto,
-    photoController.deletePhoto
-  );
-
-router
-  .route('/:photoId/reviews')
-  .post(
-    authController.protectRoute,
-    authController.restrictTo('user'),
-    reviewController.postReview
-  );
+  .delete(photoController.deletePhoto);
 
 module.exports = router;

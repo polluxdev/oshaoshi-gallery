@@ -1,20 +1,35 @@
 const express = require('express');
 
 const userController = require('../controllers/user');
-const authController = require('../controllers/auth');
+const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
 
-router.use(authController.protectRoute);
+router.use(authMiddleware.protectRoute, authMiddleware.restrictTo('guest'));
 
 router
-  .use('/profile', userController.setUserId)
   .route('/profile')
-  .get(userController.getUser)
-  .patch(userController.patchUser)
-  .delete(userController.deleteUser);
+  .get(
+    userController.setUserId,
+    userController.checkUser,
+    userController.getUser
+  )
+  .patch(
+    userController.setUserId,
+    userController.checkUser,
+    userController.uploadImage,
+    userController.checkImage,
+    userController.processImage,
+    userController.patchUser
+  )
+  .delete(
+    userController.setUserId,
+    userController.checkUser,
+    userController.checkImage,
+    userController.deleteUser
+  );
 
-router.use(authController.restrictTo('user'));
+router.use(authMiddleware.restrictTo('user'));
 
 router.route('/').get(userController.getUsers).post(userController.postUser);
 

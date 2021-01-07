@@ -1,11 +1,11 @@
 const express = require('express');
 
 const memberController = require('../controllers/member');
-const authController = require('../controllers/auth');
+const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
 
-router.use(authController.protectRoute, authController.restrictTo('user'));
+router.use(authMiddleware.protectRoute, authMiddleware.restrictTo('user'));
 
 router
   .route('/')

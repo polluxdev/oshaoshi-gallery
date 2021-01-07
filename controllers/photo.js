@@ -1,20 +1,28 @@
 const Photo = require('../models/photo');
 
 const factory = require('../utils/handlerFactory');
+const upload = require('../utils/multer');
 
 exports.setUserId = (req, res, next) => {
   if (!req.body.user) req.body.user = req.user._id;
+
   next();
 };
 
-exports.checkPhoto = factory.checkModel(Photo, 'photoId');
+exports.uploadImage = upload.single('image');
+
+exports.processImage = factory.processImage(Photo);
+
+exports.checkImage = factory.checkImage(Photo);
+
+exports.checkPhoto = factory.checkModel(Photo);
 
 exports.getPhotos = factory.getAll(Photo);
 
-exports.getPhoto = factory.getOne(Photo, 'photoId', { path: 'reviews' });
+exports.getPhoto = factory.getOne(Photo, { path: 'reviews' });
 
 exports.postPhoto = factory.createOne(Photo);
 
-exports.patchPhoto = factory.updateOne(Photo, 'photoId');
+exports.patchPhoto = factory.updateOne(Photo);
 
-exports.deletePhoto = factory.deleteOne(Photo, 'photoId');
+exports.deletePhoto = factory.deleteOne(Photo);

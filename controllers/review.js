@@ -12,12 +12,12 @@ exports.checkReview = factory.checkModel(Review);
 
 exports.getReviews = factory.getAll(Review);
 
-exports.getReview = factory.getOne(Review, 'reviewId');
+exports.getReview = factory.getOne(Review);
 
 exports.postReview = factory.createOne(Review);
 
-exports.patchReview = factory.updateOne(Review, 'reviewId');
+exports.patchReview = factory.updateOne(Review);
 
-exports.deleteReview = factory.deleteOne(Review, 'reviewId');
+exports.deleteReview = factory.deleteOne(Review);
 
 exports.deleteAllReviews = factory.deleteAll(Review);

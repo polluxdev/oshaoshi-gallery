@@ -10,8 +10,8 @@ const photoSchema = new Schema(
       required: [true, 'Photo must have a name.']
     },
     imageUrl: {
-      type: String
-      // required: [true, 'Photo must have an image.']
+      type: String,
+      required: [true, 'Photo must have an image.']
     },
     member: {
       type: mongoose.Schema.ObjectId,
@@ -37,8 +37,8 @@ const photoSchema = new Schema(
     slug: String,
     user: {
       type: mongoose.Schema.ObjectId,
-      ref: 'User'
-      // required: [true, 'Photo must belong to a user']
+      ref: 'User',
+      required: [true, 'Photo must belong to a user']
     }
   },
   {
