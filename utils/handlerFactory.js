@@ -18,12 +18,17 @@ const filterObj = (body, ...elements) => {
 
 exports.checkModel = (Model) =>
   catchAsync(async (req, res, next) => {
-    console.log(req.params);
     const model = await Model.findById(Object.values(req.params));
-    console.log(model);
     if (!model) {
       const error = new AppError(`${Model.modelName} not found!`, 404);
       return next(error);
+    }
+
+    if (model.user) {
+      if (model.user.toString() !== req.user._id.toString()) {
+        const error = new AppError('You are not authorized!', 401);
+        return next(error);
+      }
     }
 
     req.model = model;
@@ -91,6 +96,7 @@ exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const reqParams = req.params;
     let reqBody = req.body;
+
     if (reqParams.hasOwnProperty('userId')) {
       if (!req.user) return next(new AppError('You are not logged in!', 401));
 
