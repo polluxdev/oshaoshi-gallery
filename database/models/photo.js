@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('../connection');
 const slugify = require('slugify');
 
 const Schema = mongoose.Schema;

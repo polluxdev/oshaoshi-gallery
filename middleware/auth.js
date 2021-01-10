@@ -1,7 +1,9 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 
-const User = require('../models/user');
+const config = require('../config');
+
+const User = require('../database/models/user');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -19,7 +21,7 @@ exports.protectRoute = catchAsync(async (req, res, next) => {
 
   const decoded = await promisify(jwt.verify)(
     token,
-    process.env.JWT_TOKEN_SECRET_KEY
+    config.jwt.JWT_SECRET_KEY
   );
 
   const user = await User.findById(decoded.userId);

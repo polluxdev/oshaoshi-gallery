@@ -1,4 +1,4 @@
-const Photo = require('../models/photo');
+const Photo = require('../database/models/photo');
 
 const factory = require('../utils/handlerFactory');
 const upload = require('../utils/multer');

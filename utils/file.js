@@ -7,3 +7,13 @@ exports.deleteFile = (filePath) => {
     }
   });
 };
+
+exports.deleteAllFiles = (filePathArray) => {
+  filePathArray.forEach((element) => {
+    fs.unlink(element, (err) => {
+      if (err) {
+        throw err;
+      }
+    });
+  });
+};

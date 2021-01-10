@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const User = require('../models/user');
+const config = require('../config');
+const User = require('../database/models/user');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const sendEmail = require('../utils/email');
@@ -9,8 +10,8 @@ const sendEmail = require('../utils/email');
 const signToken = (user) => {
   return jwt.sign(
     { userId: user._id, email: user.email },
-    process.env.JWT_TOKEN_SECRET_KEY,
-    { expiresIn: process.env.JWT_TOKEN_EXPIRED_TIMEOUT }
+    config.jwt.JWT_SECRET_KEY,
+    { expiresIn: config.jwt.JWT_EXPIRED_TIMEOUT }
   );
 };
 
@@ -19,11 +20,11 @@ const createSendToken = (user, statusCode, res) => {
 
   const cookieOptions = {
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRED_TIMEOUT * 24 * 60 * 60 * 1000
+      Date.now() + config.jwt.JWT_COOKIE_EXPIRED_TIMEOUT * 24 * 60 * 60 * 1000
     ),
     httpOnly: true
   };
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  if (config.NODE_ENV === 'production') cookieOptions.secure = true;
 
   res.cookie('jwt', token, cookieOptions);
 
@@ -78,7 +79,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   const resetURL = `${req.protocol}://${req.get('host')}${
-    process.env.API_VERSION
+    config.API_VERSION
   }/auth/resetPassword/${resetToken}`;
 
   const message = `Forgot your password?

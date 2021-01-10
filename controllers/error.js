@@ -1,3 +1,5 @@
+const config = require('../config');
+
 const AppError = require('../utils/appError');
 
 const sendErrorDev = (error, res) => {
@@ -54,7 +56,7 @@ module.exports = (error, req, res, next) => {
   error.statusCode = error.statusCode || 500;
   error.status = error.status || 'fail';
 
-  if (process.env.NODE_ENV === 'development') {
+  if (config.NODE_ENV === 'development') {
     sendErrorDev(error, res);
   } else {
     let err = { ...error };

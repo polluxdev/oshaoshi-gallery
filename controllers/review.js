@@ -1,4 +1,4 @@
-const Review = require('../models/review');
+const Review = require('../database/models/review');
 
 const factory = require('../utils/handlerFactory');
 

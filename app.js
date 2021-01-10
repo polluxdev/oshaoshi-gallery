@@ -1,37 +1,31 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
-const dotenv = require('dotenv');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 
-dotenv.config();
+const config = require('./config');
 
-const database = require('./config/database');
 const globalErrorHandler = require('./controllers/error');
 
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/user');
-const photoRoutes = require('./routes/photo');
-const memberRoutes = require('./routes/member');
+const routes = require('./routes');
 
 const AppError = require('./utils/appError');
 
 const app = express();
-const port = process.env.PORT || 3000;
-const apiVersion = process.env.API_VERSION;
+const port = config.PORT || 3000;
+const apiVersion = config.API_VERSION;
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/public/images', express.static(path.join(__dirname, 'images')));
 
 app.use(helmet());
 
-if (process.env.NODE_ENV === 'development') {
+if (config.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
@@ -54,10 +48,7 @@ app.use(hpp());
 
 app.use(cors());
 
-app.use(apiVersion + '/auth', authRoutes);
-app.use(apiVersion + '/users', userRoutes);
-app.use(apiVersion + '/photos', photoRoutes);
-app.use(apiVersion + '/members', memberRoutes);
+app.use(apiVersion, routes);
 
 app.all('*', (req, res, next) => {
   const error = new AppError(
@@ -69,16 +60,9 @@ app.all('*', (req, res, next) => {
 
 app.use(globalErrorHandler);
 
-mongoose
-  .connect(database.uri, database.options)
-  .then(() => {
-    console.log('CONNECTED TO MONGODB!');
-  })
-  .catch(() => {
-    console.error('FAILED TO CONNECT TO MONGODB!');
-  });
-
-const server = app.listen(port);
+const server = app.listen(port, () => {
+  console.log(`Listening on PORT: ${port}`);
+});
 
 process.on('unhandledRejection', (error) => {
   console.log('UNHANDLED REJECTION!');

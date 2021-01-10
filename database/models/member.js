@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('../connection');
 
 const Schema = mongoose.Schema;
 
@@ -8,10 +8,7 @@ const memberSchema = new Schema(
       type: String,
       required: [true, 'Member must have a name.']
     },
-    imageUrl: {
-      type: String
-      // required: [true, 'Member must have a photo']
-    },
+    imageUrl: String,
     birtDate: {
       type: Date,
       required: [true, 'Member must have birth date.']

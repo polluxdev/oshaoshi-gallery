@@ -175,7 +175,7 @@ exports.processImage = (Model) =>
       image.filename = `${date}-${req.user._id}.jpeg`;
 
       const filename = image.filename,
-        imageUrl = `images/${Model.modelName.toLowerCase()}/${filename}`;
+        imageUrl = `public/images/${Model.modelName.toLowerCase()}/${filename}`;
 
       req.body.imageUrl = imageUrl;
 
@@ -196,6 +196,20 @@ exports.checkImage = () =>
       model = req.model;
 
     if (image && model.imageUrl) fileHelper.deleteFile(model.imageUrl);
+
+    next();
+  });
+
+exports.collectImage = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.find();
+    const paths = [];
+
+    doc.forEach((element) => {
+      if (element.imageUrl) paths.push(element.imageUrl);
+    });
+    
+    if (paths.length > 0) fileHelper.deleteAllFiles(paths);
 
     next();
   });

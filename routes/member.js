@@ -10,13 +10,24 @@ router.use(authMiddleware.protectRoute, authMiddleware.restrictTo('user'));
 router
   .route('/')
   .get(memberController.getMembers)
-  .post(memberController.postMember);
+  .post(
+    memberController.uploadImage,
+    memberController.checkImage,
+    memberController.processImage,
+    memberController.postMember
+  )
+  .delete(memberController.collectImage, memberController.deleteAllMembers);
 
 router
   .use('/:memberId', memberController.checkMember)
   .route('/:memberId')
   .get(memberController.getMember)
-  .patch(memberController.patchMember)
+  .patch(
+    memberController.uploadImage,
+    memberController.checkImage,
+    memberController.processImage,
+    memberController.patchMember
+  )
   .delete(memberController.deleteMember);
 
 module.exports = router;

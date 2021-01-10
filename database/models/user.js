@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('../connection');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
@@ -45,7 +45,10 @@ const userSchema = new Schema(
       default: true,
       select: false
     },
-    passwordChangedAt: Date,
+    passwordChangedAt: {
+      type: Date,
+      default: Date.now()
+    },
     passwordResetToken: String,
     passwordResetTokenExpires: Date
   },
@@ -64,7 +67,6 @@ userSchema.pre('save', async function (next) {
 userSchema.pre('save', function (next) {
   if (!this.isModified('password')) return next();
 
-  this.passwordChangedAt = new Date(Date.now());
   next();
 });
 
